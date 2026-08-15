@@ -1,25 +1,41 @@
-name: Build Shibayab APK
+title.setGravity(Gravity.CENTER);
+              r.addView(title,new LinearLayout.LayoutParams(-1,dp(60)));
+              r.addView(label("کلید API"));
+              token=new EditText(this); token.setSingleLine(); token.setHint("Bearer ..."); token.setText(p.getString("token","")); r.addView(token,new LinearLayout.LayoutParams(-1,dp(52)));
+              r.addView(label("شماره کارت"));
+              card=new EditText(this); card.setSingleLine(); card.setInputType(2); card.setHint("6037990000000000"); r.addView(card,new LinearLayout.LayoutParams(-1,dp(52)));
+              Button go=new Button(this); go.setText("تبدیل به شبا"); r.addView(go,new LinearLayout.LayoutParams(-1,dp(55)));
+              progress=new ProgressBar(this); progress.setVisibility(View.GONE); r.addView(progress);
+              result=new TextView(this); result.setTextSize(16); result.setPadding(0,dp(15),0,0); r.addView(result);
+              go.setOnClickListener(v->callApi());
+              setContentView(r);
+            }
 
-on: workflow_dispatch
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.7'
+            void callApi(){
+              String t=token.getText().toString().trim(), c=card.getText().toString().trim();
+              if(t.isEmpty()){token.setError("کلید API را وارد کنید");return;}
+              if(c.length()!=16){card.setError("شماره کارت باید 16 رقم باشد");return;}
+              getSharedPreferences("app",0).edit().putString("token",t).apply();
+              progress.setVisibility(View.VISIBLE); result.setText("در حال دریافت...");
+              Executors.newSingleThreadExecutor().execute(()->{
+                String out;
+                try{
+                  HttpURLConnection h=(HttpURLConnection)new URL("https://s.api.ir/api/sw1/CardToIban").openConnection();
+                  h.setRequestMethod("POST"); h.setConnectTimeout(20000); h.setReadTimeout(20000);
+                  h.setRequestProperty("Content-Type","application/json");
+                  h.setRequestProperty("Authorization",t.startsWith("Bearer ")?t:"Bearer "+t);
+                  h.setDoOutput(true);
+                  try(OutputStream o=h.getOutputStream()){o.write(("{\"cardNumber\":\""+c+"\"}").getBytes(StandardCharsets.UTF_8));}
+                  InputStream in=h.getResponseCode()<400?h.getInputStream():h.getErrorStream();
+                  BufferedReader br=new BufferedReader(new InputStreamReader(in,StandardCharsets.UTF_8));
+                  StringBuilder s=new StringBuilder(); String line; while((line=br.readLine())!=null)s.append(line);
+                  out="HTTP "+h.getResponseCode()+"\n\n"+s; h.disconnect();
+                }catch(Exception e){out="خطا: "+e.getMessage();}
+                String x=out; runOnUiThread(()->{progress.setVisibility(View.GONE);result.setText(x);});
+              });
+            }
+          }
+          EOF
 
       - name: Build APK
         run: gradle assembleDebug --stacktrace
