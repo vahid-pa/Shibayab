@@ -1,0 +1,33 @@
+name: Build Shibayab APK
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+      - name: Generate Android project
+        shell: bash
+        run: |
+
+          mkdir -p "$(dirname 'gradle.properties')"
+          echo 'b3JnLmdyYWRsZS5qdm1hcmdzPS1YbXgyMDQ4bSAtRGZpbGUuZW5jb2Rpbmc9VVRGLTgKYW5kcm9pZC51c2VBbmRyb2lkWD10cnVlCg==' | base64 -d > 'gradle.properties'
+          mkdir -p "$(dirname 'settings.gradle.kts')"
+          echo 'cGx1Z2luTWFuYWdlbWVudCB7IHJlcG9zaXRvcmllcyB7IGdvb2dsZSgpOyBtYXZlbkNlbnRyYWwoKTsgZ3JhZGxlUGx1Z2luUG9ydGFsKCkgfSB9CmRlcGVuZGVuY3lSZXNvbHV0aW9uTWFuYWdlbWVudCB7IHJlcG9zaXRvcmllc01vZGUuc2V0KFJlcG9zaXRvcmllc01vZGUuRkFJTF9PTl9QUk9KRUNUX1JFUE9TKTsgcmVwb3NpdG9yaWVzIHsgZ29vZ2xlKCk7IG1hdmVuQ2VudHJhbCgpIH0gfQpyb290UHJvamVjdC5uYW1lID0gIlNoaWJheWFiIgppbmNsdWRlKCI6YXBwIikK' | base64 -d > 'settings.gradle.kts'
+          mkdir -p "$(dirname 'build.gradle.kts')"
+          echo 'cGx1Z2lucyB7CiAgICBpZCgiY29tLmFuZHJvaWQuYXBwbGljYXRpb24iKSB2ZXJzaW9uICI4LjYuMSIgYXBwbHkgZmFsc2UKICAgIGlkKCJvcmcuamV0YnJhaW5zLmtvdGxpbi5hbmRyb2lkIikgdmVyc2lvbiAiMi4wLjIxIiBhcHBseSBmYWxzZQp9Cg==' | base64 -d > 'build.gradle.kts'
+          mkdir -p "$(dirname 'README.md')"
+          echo 'IyDYtNio2KfigIzbjNin2Kgg4oCUINii2YXYp9iv2YcgQnVpbGQg2KLZhtmE2KfbjNmGCtin24zZhiDZvtix2YjamNmHINio2LHYp9uMIEJ1aWxkINio2KcgR2l0SHViIEFjdGlvbnMg2KLZhdin2K/ZhyDYtNiv2Ycg2KfYs9iqLgpBUEkgS2V5INiv2KfYrtmEINm+2LHZiNqY2Ycg2YLYsdin2LEg2Ybar9ix2YHYqtmHINmIINio2LnYryDYp9iyINmG2LXYqCDYr9in2K7ZhCDYp9m+INmI2KfYsdivINmF24zigIzYtNmI2K8uCg==' | base64 -d > 'README.md'
+          mkdir -p "$(dirname 'app/build.gradle.kts')"
+          echo 'cGx1Z2lucyB7CiAgICBpZCgiY29tLmFuZHJvaWQuYXBwbGljYXRpb24iKQogICAgaWQoIm9yZy5qZXRicmFpbnMua290bGluLmFuZHJvaWQiKQp9CmFuZHJvaWQgewogICAgbmFtZXNwYWNlID0gImNvbS5leGFtcGxlLnNoaWJheWFiIgogICAgY29tcGlsZVNkayA9IDM1CiAgICBkZWZhdWx0Q29uZmlnIHsKICAgICAgICBhcHBsaWNhdGlvbklkID0gImNvbS5leGFtcGxlLnNoaWJheWFiIgogICAgICAgIG1pblNkayA9IDIzCiAgICAgICAgdGFyZ2V0U2RrID0gMzUKICAgICAgICB2ZXJzaW9uQ29kZSA9IDEKICAgICAgICB2ZXJzaW9uTmFtZSA9ICIxLjAiCiAgICB9Cn0KZGVwZW5kZW5jaWVzIHsKICAgIGltcGxlbWVudGF0aW9uKCJhbmRyb2lkeC5jb3JlOmNvcmUta3R4OjEuMTUuMCIpCiAgICBpbXBsZW1lbnRhdGlvbigiYW5kcm9pZHguYXBwY29tcGF0OmFwcGNvbXBhdDoxLjcuMCIpCiAgICBpbXBsZW1lbnRhdGlvbigiY29tLmdvb2dsZS5hbmRyb2lkLm1hdGVyaWFsOm1hdGVyaWFsOjEuMTIuMCIpCiAgICBpbXBsZW1lbnRhdGlvbigiY29tLnNxdWFyZXVwLm9raHR0cDM6b2todHRwOjQuMTIuMCIpCn0K' | base64 -d > 'app/build.gradle.kts'
+          mkdir -p "$(dirname 'app/src/main/AndroidManifest.xml')"
+          echo 'PG1hbmlmZXN0IHhtbG5zOmFuZHJvaWQ9Imh0dHA6Ly9zY2hlbWFzLmFuZHJvaWQuY29tL2Fway9yZXMvYW5kcm9pZCI+CiAgICA8dXNlcy1wZXJtaXNzaW9uIGFuZHJvaWQ6bmFtZT0iYW5kcm9pZC5wZXJtaXNzaW9uLklOVEVSTkVUIi8+CiAgICA8YXBwbGljYXRpb24gYW5kcm9pZDp0aGVtZT0iQHN0eWxlL1RoZW1lLlNoaWJheWFiIiBhbmRyb2lkOmxhYmVsPSLYtNio2KfigIzbjNin2KgiIGFuZHJvaWQ6YWxsb3dCYWNrdXA9ImZhbHNlIj4KICAgICAgICA8YWN0aXZpdHkgYW5kcm9pZDpuYW1lPSIuTWFpbkFjdGl2aXR5IiBhbmRyb2lkOmV4cG9ydGVkPSJ0cnVlIj4KICAgICAgICAgICAgPGludGVudC1maWx0ZXI+CiAgICAgICAgICAgICAgICA8YWN0aW9uIGFuZHJvaWQ6bmFtZT0iYW5kcm9pZC5pbnRlbnQuYWN0aW9uLk1BSU4iLz4KICAgICAgICAgICAgICAgIDxjYXRlZ29yeSBhbmRyb2lkOm5hbWU9ImFuZHJvaWQuaW50ZW50LmNhdGVnb3J5LkxBVU5DSEVSIi8+CiAgICAgICAgICAgIDwvaW50ZW50LWZpbHRlcj4KICAgICAgICA8L2FjdGl2aXR5PgogICAgPC9hcHBsaWNhdGlvbj4KPC9tYW5pZmVzdD4K' | base64 -d > 'app/src/main/AndroidManifest.xml'
+          mkdir -p "$(dirname 'app/src/main/res/layout/activity_main.xml')"
+          echo 'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPFNjcm9sbFZpZXcgeG1sbnM6YW5kcm9pZD0iaHR0cDovL3NjaGVtYXMuYW5kcm9pZC5jb20vYXBrL3Jlcy9hbmRyb2lkIgogICAgYW5kcm9pZDpsYXlvdXRfd2lkdGg9Im1hdGNoX3BhcmVudCIgYW5kcm9pZDpsYXlvdXRfaGVpZ2h0PSJtYXRjaF9wYXJlbnQiPgo8TGluZWFyTGF5b3V0IGFuZHJvaWQ6b3JpZW50YXRpb249InZlcnRpY2FsIiBhbmRyb2lkOnBhZGRpbmc9IjIwZHAiCiAgICBhbmRyb2lkOmxheW91dF93aWR0aD0ibWF0Y2hfcGFyZW50IiBhbmRyb2lkOmxheW91dF9oZWlnaHQ9IndyYXBf
